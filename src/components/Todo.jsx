@@ -1,88 +1,32 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import {
-  loadDeleteTodo,
-  loadPatchTodo,
-  loadTodoAdd,
-  loadTodoGet,
-} from "../redux/features/todoPosts";
-import styles from "./style.module.css";
+import React from "react";
 
-const Todo = () => {
-  const postTodo = useSelector((state) => state.todo);
-  const loading = useSelector((state) => state.loading);
-  const dispatch = useDispatch();
-  const [post, setPost] = useState("");
-
-  console.log(loading);
-
-  useEffect(() => {
-    dispatch(loadTodoGet());
-  }, [dispatch]);
-
-  const handleChange = (e) => {
-    setPost(e.target.value);
-  };
-  const handleClick = () => {
-    dispatch(loadTodoAdd(post));
-  };
-  const handleClickDelete = (id) => {
+const Todo = ({ id, completed }) => {
+  const handleClickDelete = () => {
     dispatch(loadDeleteTodo(id));
   };
 
-  const handleChecked = (id, completed) => {
+  const handleChecked = () => {
     dispatch(loadPatchTodo(id, completed));
   };
-
   return (
-    <>
-      {loading ? (
-        <p>идет загрузка...</p>
-      ) : (
-        <div>
-          <h1 className={styles.todoListH1}>ToDo-List</h1>
-          <div className={styles.inputAndButton}>
-            <input
-              onChange={handleChange}
-              value={post}
-              type="text"
-              placeholder="напишите ваш текст..."
-              className="form-control"
-            />
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              onClick={handleClick}
-            >
-              Add
-            </button>
-          </div>
-          <div className={styles.todosSize}>
-            {postTodo.map((item) => {
-              return (
-                <div className={styles.todoList}>
-                  <input
-                    className="form-check-input mt-0"
-                    type="checkbox"
-                    onChange={() => handleChecked(item._id, item.completed)}
-                    checked={item.completed}
-                  />{" "}
-                  {item.text}{" "}
-                  <button
-                    className={styles.badge}
-                    onClick={() => handleClickDelete(item._id)}
-                  >
-                    ❌
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </>
+    <div className={styles.todoList}>
+      <input
+        className="form-check-input mt-0"
+        type="checkbox"
+        onChange={() => handleChecked()}
+        checked={item.completed}
+      />{" "}
+      {item.text}{" "}
+      <button className={styles.badge} onClick={() => handleClickDelete()}>
+        ❌
+      </button>
+    </div>
   );
 };
 
 export default Todo;
+
+Todos.PropType = {
+  id: String,
+  completed: Boolean,
+};
